@@ -60,12 +60,15 @@ export const Default = () => {
     templateIndex: 0,
     ownership: { holderAddress: "", beneficiaryAddress: "" },
   });
+  const [forms, setForms] = useState<any>();
 
   return (
     <DynamicForm
       schema={form.schema}
       form={formData}
+      forms={forms}
       setFormData={setFormData}
+      setForms={setForms}
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       setOwnership={() => {}}
       attachmentAccepted={true}
