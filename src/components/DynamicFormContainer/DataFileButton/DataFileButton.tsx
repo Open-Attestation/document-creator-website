@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { readFileAsJson } from "../../../common/utils";
+import { readFileAsJson, readFileAsCsv } from "../../../common/utils";
 import { Button } from "../../UI/Button";
 import { ErrorAlert } from "../../Alert";
 import { getLogger } from "../../../utils/logger";
@@ -15,8 +15,13 @@ export const DataFileButton: FunctionComponent<DataFileButton> = ({ onDataFile }
   const onDrop = async (files: File[]): Promise<void> => {
     try {
       const file = files[0];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data = await readFileAsJson<any>(file);
+      let data = null;
+      if (file.name.indexOf(".csv")) {
+        data = await readFileAsCsv<any>(file);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data = await readFileAsJson<any>(file);
+      }
       setError(false);
       onDataFile(data);
     } catch (e) {

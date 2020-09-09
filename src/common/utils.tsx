@@ -1,3 +1,5 @@
+import csv from "csvtojson";
+
 export function readFileAsJson<T>(file: File): Promise<T> {
   return new Promise((resolve, reject) => {
     const reader: FileReader = new FileReader();
@@ -8,6 +10,27 @@ export function readFileAsJson<T>(file: File): Promise<T> {
       try {
         const json: T = JSON.parse(reader.result as string);
         resolve(json);
+      } catch (e) {
+        reject(e);
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+export function readFileAsCsv<T>(file: File): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const reader: FileReader = new FileReader();
+    if (reader.error) {
+      reject(reader.error);
+    }
+    reader.onload = () => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const c: any = csv()
+          .fromString(reader.result as string)
+          .then((data: unknown) => data);
+        resolve(c);
       } catch (e) {
         reject(e);
       }

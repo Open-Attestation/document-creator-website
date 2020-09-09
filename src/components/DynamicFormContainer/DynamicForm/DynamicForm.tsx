@@ -47,6 +47,7 @@ export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
     // See discussion: https://github.com/rjsf-team/react-jsonschema-form/issues/306
     const nextFormData = cloneDeep(data.formData);
 
+    console.log(value);
     // If value is an array, attempt to append multiple docs of the current form's templateIndex
     if (Array.isArray(value)) {
       const formObjects = [];
