@@ -47,7 +47,6 @@ export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
     // See discussion: https://github.com/rjsf-team/react-jsonschema-form/issues/306
     const nextFormData = cloneDeep(data.formData);
 
-    console.log(value);
     // If value is an array, attempt to append multiple docs of the current form's templateIndex
     if (Array.isArray(value)) {
       const formObjects = [];
@@ -62,7 +61,7 @@ export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
           ownership: { beneficiaryAddress: "", holderAddress: "" },
         });
       }
-      setForms([...forms, ...formObjects]);
+      setForms([...formObjects]);
     } else {
       // But if it's just one object, we'll replace the values of the existing form (i.e. original behaviour)
       setFormData({ ...data, formData: defaultsDeep(value, nextFormData) });
