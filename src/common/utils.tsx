@@ -18,22 +18,25 @@ export function readFileAsJson<T>(file: File): Promise<T> {
   });
 }
 
-export function readFileAsCsv<T>(file: File): Promise<T> {
+export function readFileAsCsv<T>(file: File): Promise<Array<T>> {
   return new Promise((resolve, reject) => {
     const reader: FileReader = new FileReader();
     if (reader.error) {
       reject(reader.error);
     }
-    reader.onload = () => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const c: any = csv()
-          .fromString(reader.result as string)
-          .then((data: unknown) => data);
-        resolve(c);
-      } catch (e) {
-        reject(e);
-      }
+    reader.onload = async () => {
+      // This is specifically for GovTech intern certs, we'll require headers
+      // in the uploaded CSV file but replace it with the following predefined ones
+      const data: T[] = await csv({
+        noheader: false,
+        headers: [
+          "programme.startDate",
+          "programme.endDate",
+          "recipient.firstName",
+          "recipient.lastName",
+        ],
+      }).fromString(reader.result as string);
+      resolve(data);
     };
     reader.readAsText(file);
   });

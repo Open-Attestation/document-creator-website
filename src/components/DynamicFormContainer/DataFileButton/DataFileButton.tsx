@@ -17,7 +17,7 @@ export const DataFileButton: FunctionComponent<DataFileButton> = ({ onDataFile }
       const file = files[0];
       let data = null;
       if (file.name.indexOf(".csv")) {
-        data = await readFileAsCsv<any>(file);
+        data = await readFileAsCsv(file);
       } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data = await readFileAsJson<any>(file);
