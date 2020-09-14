@@ -47,13 +47,14 @@ export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
     if (Array.isArray(value)) {
       const formObjects = [];
       for (let i = 0; i < value.length; i++) {
+        const name = `${value[i].recipient?.firstName}-${value[i].recipient?.lastName}`;
         formObjects.push({
           templateIndex, // Use the current form's templateIndex
           data: {
             ...data,
             formData: defaultsDeep(value[i], nextFormData),
           },
-          fileName: `Document-${forms.length + i + 1}`,
+          fileName: `Document-${i + 1}-${name}`, // Specifically for intern certs
           ownership: { beneficiaryAddress: "", holderAddress: "" },
         });
       }
