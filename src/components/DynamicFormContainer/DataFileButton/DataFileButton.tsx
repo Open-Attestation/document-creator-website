@@ -4,6 +4,7 @@ import { readFileAsJson, readFileAsCsv } from "../../../common/utils";
 import { Button } from "../../UI/Button";
 import { ErrorAlert } from "../../Alert";
 import { getLogger } from "../../../utils/logger";
+import { useFormsContext } from "../../../common/context/forms";
 
 const { stack } = getLogger("DataFileButton");
 interface DataFileButton {
@@ -11,13 +12,15 @@ interface DataFileButton {
 }
 
 export const DataFileButton: FunctionComponent<DataFileButton> = ({ onDataFile }) => {
+  const { currentFormTemplate } = useFormsContext();
   const [error, setError] = useState(false);
   const onDrop = async (files: File[]): Promise<void> => {
     try {
       const file = files[0];
       let data = null;
-      if (file.name.indexOf(".csv")) {
-        data = await readFileAsCsv(file);
+      if (file.name.indexOf(".csv") > 0) {
+        // has to be > 0...
+        data = await readFileAsCsv(file, currentFormTemplate?.headers);
       } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         data = await readFileAsJson<any>(file);
