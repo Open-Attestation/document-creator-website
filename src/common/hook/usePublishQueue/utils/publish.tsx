@@ -60,7 +60,7 @@ export const getRawDocuments = async (
   config: Config
 ): Promise<RawDocument[]> => {
   return Promise.all(
-    forms.map(async ({ data, templateIndex, fileName, ownership }) => {
+    forms.map(async ({ data, templateIndex, fileName, extension, ownership }) => {
       let qrUrl = {};
 
       if (config.network !== "local") {
@@ -79,6 +79,7 @@ export const getRawDocuments = async (
       const payload = formConfig.type === "TRANSFERABLE_RECORD" ? { ownership } : {};
       return {
         type: formConfig.type,
+        extension,
         contractAddress,
         rawDocument: formData,
         fileName,

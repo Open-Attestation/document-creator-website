@@ -19,7 +19,6 @@ export const DataFileButton: FunctionComponent<DataFileButton> = ({ onDataFile }
       const file = files[0];
       let data = null;
       if (file.name.indexOf(".csv") > 0) {
-        // has to be > 0...
         data = await readFileAsCsv(file, currentFormTemplate?.headers);
       } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
