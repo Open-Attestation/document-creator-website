@@ -54,6 +54,7 @@ export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
             formData: defaultsDeep(value[i], nextFormData),
           },
           fileName: `Document-${i + 1}-${name}`, // Specifically for intern certs
+          extension: ".opencert",
           ownership: { beneficiaryAddress: "", holderAddress: "" },
         });
       }
