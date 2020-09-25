@@ -12,6 +12,7 @@ import { CustomFieldTemplate, CustomObjectFieldTemplate } from "./CustomTemplate
 
 export interface DynamicFormProps {
   schema: FormTemplate["schema"];
+  extension?: FormTemplate["extension"];
   attachmentAccepted: boolean;
   attachmentAcceptedFormat?: string;
   form: FormEntry;
@@ -26,6 +27,7 @@ export interface DynamicFormProps {
 export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
   schema,
   form,
+  extension,
   setForms,
   setFormData,
   setOwnership,
@@ -53,8 +55,8 @@ export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
             ...data,
             formData: defaultsDeep(value[i], nextFormData),
           },
+          extension,
           fileName: `Document-${i + 1}-${name}`, // Specifically for intern certs
-          extension: ".opencert",
           ownership: { beneficiaryAddress: "", holderAddress: "" },
         });
       }
