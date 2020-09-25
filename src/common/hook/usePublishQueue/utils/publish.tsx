@@ -77,14 +77,25 @@ export const getRawDocuments = async (
       const contractAddress =
         formData.issuers[0]?.documentStore || formData.issuers[0]?.tokenRegistry;
       const payload = formConfig.type === "TRANSFERABLE_RECORD" ? { ownership } : {};
-      return {
-        type: formConfig.type,
-        extension,
-        contractAddress,
-        rawDocument: formData,
-        fileName,
-        payload,
-      };
+
+      if (extension) {
+        return {
+          type: formConfig.type,
+          extension,
+          contractAddress,
+          rawDocument: formData,
+          fileName,
+          payload,
+        };
+      } else {
+        return {
+          type: formConfig.type,
+          contractAddress,
+          rawDocument: formData,
+          fileName,
+          payload,
+        };
+      }
     })
   );
 };
