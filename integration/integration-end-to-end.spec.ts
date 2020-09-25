@@ -1,4 +1,4 @@
-import { Selector } from "testcafe";
+import { ClientFunction, Selector } from "testcafe";
 import { enterPassword, loadConfigFile } from "./helper";
 
 fixture("Document Creator").page`http://localhost:3000`;
@@ -24,8 +24,14 @@ const EblNumberField = Selector("input#root_blNumber");
 const previousDocumentButton = Selector("[data-testid='previous-document-button']");
 const nextDocumentButton = Selector("[data-testid='next-document-button']");
 const fileNameField = Selector("[data-testid='file-name-input']");
+const goBack = ClientFunction(() => window.history.back());
 
 test("Upload configuration file, choose form, fill form, submit form correctly", async (t) => {
+  // Check go to doc button
+  await t.click(Selector("[data-testid='config-file-docs-button']"));
+  await t.expect(Title.textContent).contains("Using TradeTrust Document Creator");
+  await goBack();
+
   // Upload config file
   await loadConfigFile(Config);
   await t.expect(Title.textContent).contains("Login with Password");
@@ -105,9 +111,9 @@ test("Upload configuration file, choose form, fill form, submit form correctly",
 
   // Check that download exists
   await t.expect(Title.textContent).contains("Document(s) issued successfully");
-  await t.expect(Selector("div").withText("Document-1.tt").exists).ok();
+  await t.expect(Selector("div").withText("Document-1-local.tt").exists).ok();
   await t.expect(Selector("div").withText("Download").exists).ok();
-  await t.expect(Selector("div").withText("File-2.tt").exists).ok();
+  await t.expect(Selector("div").withText("File-2-local.tt").exists).ok();
   await t.expect(Selector("div").withText("Download").exists).ok();
 
   // Issue transferable record
@@ -124,6 +130,6 @@ test("Upload configuration file, choose form, fill form, submit form correctly",
 
   // Check that EBL is created
   await t.expect(Title.textContent).contains("Document(s) issued successfully");
-  await t.expect(Selector("div").withText("Document-1.tt").exists).ok();
+  await t.expect(Selector("div").withText("Document-1-local.tt").exists).ok();
   await t.expect(Selector("div").withText("Download").exists).ok();
 });

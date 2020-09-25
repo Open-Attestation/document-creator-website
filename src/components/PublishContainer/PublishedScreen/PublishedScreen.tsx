@@ -3,10 +3,11 @@ import React, { FunctionComponent } from "react";
 import { useConfigContext } from "../../../common/context/config";
 import { useFormsContext } from "../../../common/context/forms";
 import { FailedJobErrors, WrappedDocument } from "../../../types";
+import { generateFileName } from "../../../utils/fileName";
 import { Container } from "../../Container";
 import { ProgressBar } from "../../ProgressBar";
 import { Button } from "../../UI/Button";
-import { SvgIcon, SvgIconCheckCircle, SvgIconDownload, SvgIconXCircle } from "../../UI/SvgIcon";
+import { CheckCircle, Download, XCircle } from "react-feather";
 import { Title } from "../../UI/Title";
 import { PublishedTag } from "../PublishedScreen/PublishedTag";
 
@@ -19,7 +20,7 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
   publishedDocuments,
   failedPublishedDocuments,
 }) => {
-  const { setConfig } = useConfigContext();
+  const { setConfig, config } = useConfigContext();
   const { setForms, setActiveFormIndex } = useFormsContext();
 
   const createAnotherDoc = (): void => {
@@ -56,9 +57,7 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
         <ProgressBar step={3} />
         <div className="flex justify-between items-end">
           <Title className="flex items-center mb-8">
-            <SvgIcon className="mr-2 text-teal">
-              <SvgIconCheckCircle />
-            </SvgIcon>
+            <CheckCircle className="mr-2 text-teal" />
             {publishedDocuments.length > 0
               ? "Document(s) issued successfully"
               : "Document(s) failed to issue"}
@@ -99,16 +98,14 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
             </div>
             <div className="bg-red-lighter p-3 flex flex-col">
               <div className="flex">
-                <SvgIcon className="text-red">
-                  <SvgIconXCircle />
-                </SvgIcon>
+                <XCircle className="text-red" />
                 <div className="text-red ml-2 flex-grow">
                   These documents failed to publish due to some errors. Kindly rectify and try
                   publishing again.
                 </div>
                 <Button className="bg-white text-red px-4 py-3">
                   <a
-                    download="error_log.txt"
+                    download={generateFileName(config, "error-log", "txt")}
                     href={`data:text/plain;charset=UTF-8,${JSON.stringify(
                       formattedErrorLog,
                       null,
@@ -116,9 +113,7 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
                     )}`}
                   >
                     <div className="flex">
-                      <SvgIcon>
-                        <SvgIconDownload />
-                      </SvgIcon>
+                      <Download />
                       <div className="text-red ml-2">Download Error Log</div>
                     </div>
                   </a>
@@ -128,7 +123,9 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
                 const size = prettyBytes(getFileSize(JSON.stringify(doc.wrappedDocument)));
                 return (
                   <div key={index} className="flex items-center">
-                    <div className="font-bold text-lightgrey-dark">{doc.fileName}.tt</div>
+                    <div className="font-bold text-lightgrey-dark">
+                      {generateFileName(config, doc.fileName, "tt")}
+                    </div>
                     <div className="text-xs text-lightgrey-dark ml-1">({size})</div>
                   </div>
                 );
