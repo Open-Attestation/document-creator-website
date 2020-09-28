@@ -1,4 +1,5 @@
 import prettyBytes from "pretty-bytes";
+import { saveAs } from "file-saver";
 import React, { FunctionComponent } from "react";
 import { useConfigContext } from "../../../common/context/config";
 import { useFormsContext } from "../../../common/context/forms";
@@ -10,6 +11,7 @@ import { Button } from "../../UI/Button";
 import { CheckCircle, Download, XCircle } from "react-feather";
 import { Title } from "../../UI/Title";
 import { PublishedTag } from "../PublishedScreen/PublishedTag";
+import JSZip from "jszip";
 
 interface PublishScreen {
   publishedDocuments: WrappedDocument[];
@@ -22,7 +24,20 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
 }) => {
   const { setConfig, config } = useConfigContext();
   const { setForms, setActiveFormIndex } = useFormsContext();
-
+  console.log(publishedDocuments);
+  const downloadAsZip = (): void => {
+    if (publishedDocuments) {
+      const zip = new JSZip();
+      publishedDocuments.map((doc) => {
+        const extension = doc.extension ? doc.extension : "tt";
+        const fileName = generateFileName(config, doc.fileName, extension);
+        zip.file(fileName, JSON.stringify(doc.wrappedDocument, null, 2));
+      });
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        saveAs(content, "Documents.zip");
+      });
+    }
+  };
   const createAnotherDoc = (): void => {
     setForms([]);
     setActiveFormIndex(undefined);
@@ -63,6 +78,9 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
               : "Document(s) failed to issue"}
           </Title>
           <div>
+            <Button className="bg-white text-orange px-4 py-3 mb-6 mr-4" onClick={downloadAsZip}>
+              Download as Zip
+            </Button>
             <Button className="bg-white text-orange px-4 py-3 mb-6 mr-4" onClick={createAnotherDoc}>
               Create another Document
             </Button>
