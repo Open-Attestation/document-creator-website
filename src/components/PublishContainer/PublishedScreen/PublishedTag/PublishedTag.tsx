@@ -19,7 +19,8 @@ export const PublishedTag: FunctionComponent<PublishedTagProps> = ({ doc }) => {
   const file = JSON.stringify(doc.wrappedDocument);
   const size = prettyBytes(getFileSize(file));
   const blob = new Blob([file], { type: "text/json;charset=utf-8" });
-  const fileName = generateFileName(config, doc.fileName, "tt");
+  const extension = doc.extension ? doc.extension : "tt";
+  const fileName = generateFileName(config, doc.fileName, extension);
   return (
     <div className="mt-4 flex rounded bg-white p-3 min-w-xs max-w-xs border border-solid border-lightgrey mr-4">
       <div className="rounded-full bg-blue mr-4 w-12 h-12 text-white font-bold flex justify-center items-center">

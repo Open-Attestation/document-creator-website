@@ -16,18 +16,23 @@ import {
 
 export interface DynamicFormProps {
   schema: FormTemplate["schema"];
+  extension?: FormTemplate["extension"];
   attachmentAccepted: boolean;
   attachmentAcceptedFormat?: string;
   form: FormEntry;
+  forms: FormEntry[];
   className?: string;
   type: FormType;
   setFormData: (formData: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
   setOwnership: (ownership: Ownership) => void;
+  setForms: (forms: FormEntry[]) => void;
 }
 
 export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
   schema,
   form,
+  extension,
+  setForms,
   setFormData,
   setOwnership,
   className,
@@ -35,14 +40,35 @@ export const DynamicFormRaw: FunctionComponent<DynamicFormProps> = ({
   type,
   attachmentAcceptedFormat = "",
 }) => {
-  const { data, ownership } = form;
+  const { templateIndex, data, ownership } = form;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mergeFormValue = (value: any): void => {
     // Avoid using spread which will lazy copy the object
     // See discussion: https://github.com/rjsf-team/react-jsonschema-form/issues/306
     const nextFormData = cloneDeep(data.formData);
-    setFormData({ ...data, formData: defaultsDeep(value, nextFormData) });
+
+    // If value is an array, attempt to append multiple docs of the current form's templateIndex
+    if (Array.isArray(value)) {
+      const formObjects = [];
+      for (let i = 0; i < value.length; i++) {
+        const name = `${value[i].recipient?.firstName}-${value[i].recipient?.lastName}`;
+        formObjects.push({
+          templateIndex, // Use the current form's templateIndex
+          data: {
+            ...data,
+            formData: defaultsDeep(value[i], nextFormData),
+          },
+          extension,
+          fileName: `Document-${i + 1}-${name}`, // Specifically for intern certs
+          ownership: { beneficiaryAddress: "", holderAddress: "" },
+        });
+      }
+      setForms([...formObjects]);
+    } else {
+      // But if it's just one object, we'll replace the values of the existing form (i.e. original behaviour)
+      setFormData({ ...data, formData: defaultsDeep(value, nextFormData) });
+    }
   };
 
   const isTransferableRecord = type === "TRANSFERABLE_RECORD";

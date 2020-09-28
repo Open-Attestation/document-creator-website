@@ -1,3 +1,5 @@
+import csv from "csvtojson";
+
 export function readFileAsJson<T>(file: File): Promise<T> {
   return new Promise((resolve, reject) => {
     const reader: FileReader = new FileReader();
@@ -11,6 +13,23 @@ export function readFileAsJson<T>(file: File): Promise<T> {
       } catch (e) {
         reject(e);
       }
+    };
+    reader.readAsText(file);
+  });
+}
+
+export function readFileAsCsv<T>(file: File, headers?: string[]): Promise<Array<T>> {
+  return new Promise((resolve, reject) => {
+    const reader: FileReader = new FileReader();
+    if (reader.error) {
+      reject(reader.error);
+    }
+    reader.onload = async () => {
+      const data: T[] = await csv({
+        noheader: false,
+        headers,
+      }).fromString(reader.result as string);
+      resolve(data);
     };
     reader.readAsText(file);
   });

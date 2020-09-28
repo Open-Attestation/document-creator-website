@@ -10,6 +10,8 @@ export interface FormTemplate {
   defaults: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   schema: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   attachments?: Attachments;
+  headers?: string[];
+  extension?: string;
 }
 
 export interface DocumentStorage {
@@ -61,6 +63,7 @@ export interface Ownership {
 // FormEntry is used to store a form's inputs (from FromData) & metadata
 export interface FormEntry {
   fileName: string;
+  extension?: string;
   data: FormData;
   templateIndex: number;
   ownership: Ownership;
@@ -68,6 +71,7 @@ export interface FormEntry {
 
 export interface RawDocument {
   type: FormType;
+  extension?: string;
   contractAddress: string;
   rawDocument: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   fileName: string;
