@@ -1,8 +1,10 @@
+import JSZip from "jszip";
 import React, { FunctionComponent, ReactElement } from "react";
 import { CheckCircle, XCircle } from "react-feather";
 import { useConfigContext } from "../../../../common/context/config";
 import { useFormsContext } from "../../../../common/context/forms";
 import { WrappedDocument } from "../../../../types";
+import { generateFileName } from "../../../../utils/fileName";
 import { Button } from "../../../UI/Button";
 import { PublishLoader } from "../../../UI/PublishLoader";
 import { Title } from "../../../UI/Title";
@@ -16,8 +18,22 @@ export const PublishTitle: FunctionComponent<PublishTitle> = ({
   publishState,
   publishedDocuments,
 }) => {
-  const { setConfig } = useConfigContext();
+  const { config, setConfig } = useConfigContext();
   const { setForms, setActiveFormIndex } = useFormsContext();
+
+  const downloadAsZip = (): void => {
+    if (publishedDocuments) {
+      const zip = new JSZip();
+      publishedDocuments.map((doc) => {
+        const extension = doc.extension ? doc.extension : "tt";
+        const fileName = generateFileName(config, doc.fileName, extension);
+        zip.file(fileName, JSON.stringify(doc.wrappedDocument, null, 2));
+      });
+      zip.generateAsync({ type: "blob" }).then(function (content) {
+        saveAs(content, "Documents.zip");
+      });
+    }
+  };
 
   const createAnotherDoc = (): void => {
     setForms([]);
@@ -69,6 +85,9 @@ export const PublishTitle: FunctionComponent<PublishTitle> = ({
       <Title className="flex items-center mb-8">{getDisplayTitle()}</Title>
       {publishState === "CONFIRMED" && (
         <div>
+          <Button className="bg-white text-orange px-4 py-3 mb-6 mr-4" onClick={downloadAsZip}>
+              Download as Zip
+            </Button>
           <Button className="bg-white text-orange px-4 py-3 mb-6 mr-4" onClick={createAnotherDoc}>
             Create another Document
           </Button>
