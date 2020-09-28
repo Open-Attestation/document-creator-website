@@ -24,11 +24,11 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
 }) => {
   const { setConfig, config } = useConfigContext();
   const { setForms, setActiveFormIndex } = useFormsContext();
-  console.log(publishedDocuments);
+
   const downloadAsZip = (): void => {
     if (publishedDocuments) {
       const zip = new JSZip();
-      publishedDocuments.map((doc) => {
+      publishedDocuments.forEach((doc): void => {
         const extension = doc.extension ? doc.extension : "tt";
         const fileName = generateFileName(config, doc.fileName, extension);
         zip.file(fileName, JSON.stringify(doc.wrappedDocument, null, 2));
