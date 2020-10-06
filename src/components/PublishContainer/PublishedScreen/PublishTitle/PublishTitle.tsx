@@ -24,7 +24,7 @@ export const PublishTitle: FunctionComponent<PublishTitle> = ({
   const downloadAsZip = (): void => {
     if (publishedDocuments) {
       const zip = new JSZip();
-      publishedDocuments.map((doc) => {
+      publishedDocuments.forEach((doc) => {
         const extension = doc.extension ? doc.extension : "tt";
         const fileName = generateFileName(config, doc.fileName, extension);
         zip.file(fileName, JSON.stringify(doc.wrappedDocument, null, 2));
@@ -86,8 +86,8 @@ export const PublishTitle: FunctionComponent<PublishTitle> = ({
       {publishState === "CONFIRMED" && (
         <div>
           <Button className="bg-white text-orange px-4 py-3 mb-6 mr-4" onClick={downloadAsZip}>
-              Download as Zip
-            </Button>
+            Download as Zip
+          </Button>
           <Button className="bg-white text-orange px-4 py-3 mb-6 mr-4" onClick={createAnotherDoc}>
             Create another Document
           </Button>
