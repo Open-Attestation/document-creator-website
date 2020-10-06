@@ -1,4 +1,5 @@
 import prettyBytes from "pretty-bytes";
+import { saveAs } from "file-saver";
 import React, { FunctionComponent } from "react";
 import { Download, XCircle } from "react-feather";
 import { useConfigContext } from "../../../common/context/config";
