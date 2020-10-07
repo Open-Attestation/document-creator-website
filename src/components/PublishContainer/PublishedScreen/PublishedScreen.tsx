@@ -98,10 +98,11 @@ export const PublishedScreen: FunctionComponent<PublishScreen> = ({
               </div>
               {failPublishedDocuments.map((doc, index) => {
                 const size = prettyBytes(getFileSize(JSON.stringify(doc.wrappedDocument)));
+                const extension = doc.extension ? doc.extension : "tt";
                 return (
                   <div key={index} className="flex items-center">
                     <div className="font-bold text-lightgrey-dark">
-                      {generateFileName(config, doc.fileName, "tt")}
+                      {generateFileName(config, doc.fileName, extension)}
                     </div>
                     <div className="text-xs text-lightgrey-dark ml-1">({size})</div>
                   </div>
